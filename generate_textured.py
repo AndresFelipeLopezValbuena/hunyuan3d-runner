@@ -1,9 +1,18 @@
 import sys
 import os
 import glob
+import types
 
 sys.path.insert(0, './hy3dshape')
-sys.path.insert(0, './hy3dpaint')
+sys.path.insert(0, '.')
+
+# Patch torchvision.transforms.functional_tensor (removed in newer torchvision)
+import torchvision.transforms.functional as F
+import torchvision.transforms
+mock = types.ModuleType("torchvision.transforms.functional_tensor")
+mock.rgb_to_grayscale = F.rgb_to_grayscale
+sys.modules["torchvision.transforms.functional_tensor"] = mock
+torchvision.transforms.functional_tensor = mock
 
 from PIL import Image
 from hy3dshape.pipelines import Hunyuan3DDiTFlowMatchingPipeline
